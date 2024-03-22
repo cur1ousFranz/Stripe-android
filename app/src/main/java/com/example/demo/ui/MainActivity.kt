@@ -56,15 +56,25 @@ class MainActivity: AppCompatActivity() {
     }
 
     fun presentPaymentSheet() {
-        paymentSheet.presentWithSetupIntent(
-            setupIntentClientSecret,
-            PaymentSheet.Configuration(
+        val googlePayConfiguration = PaymentSheet.GooglePayConfiguration(
+            environment = PaymentSheet.GooglePayConfiguration.Environment.Test,
+            countryCode = "US",
+            currencyCode = "USD", // Required for Setup Intents, optional for Payment Intents
+            buttonType = PaymentSheet.GooglePayConfiguration.ButtonType.Pay
+        )
+
+        val configuration = PaymentSheet.Configuration(
                 merchantDisplayName = "My merchant name",
                 customer = customerConfig,
                 // Set `allowsDelayedPaymentMethods` to true if your business handles
                 // delayed notification payment methods like US bank accounts.
-                allowsDelayedPaymentMethods = false
+                allowsDelayedPaymentMethods = true,
+                googlePay = googlePayConfiguration
             )
+
+        paymentSheet.presentWithSetupIntent(
+            setupIntentClientSecret,
+            configuration
         )
     }
 

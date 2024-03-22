@@ -56,9 +56,13 @@ dependencies {
     def stripe_version = "20.40.0"
     implementation "com.stripe:stripe-android:$stripe_version"
 
+    // Fuel
     def fuel_version = "2.3.1"
     implementation "com.github.kittinunf.fuel:fuel:$fuel_version"
     implementation "com.github.kittinunf.fuel:fuel-json:$fuel_version"
+
+    // Google Pay
+    implementation 'com.google.android.gms:play-services-wallet:19.3.0'
 }
 
 kapt {

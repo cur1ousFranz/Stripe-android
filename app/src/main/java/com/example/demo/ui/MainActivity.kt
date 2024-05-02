@@ -26,25 +26,25 @@ class MainActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        paymentSheet = PaymentSheet(this, ::onPaymentSheetResult)
+//        paymentSheet = PaymentSheet(this, ::onPaymentSheetResult)
         val btnOrder = findViewById<Button>(R.id.btnOrder)
 
         btnOrder.setOnClickListener {
             runBlocking {
-                "http://10.0.2.2:8000/api/payment/intent".httpGet().responseJson { _, _, result ->
+                "http://10.0.2.2:4000/".httpGet().responseJson { _, _, result ->
                     if (result is Result.Success) {
                         val responseJson = result.get().obj()
                         Log.i("[FRANZ] RESPONSE", "$responseJson")
-                        setupIntentClientSecret = responseJson.getString("setupIntent")
-                        customerConfig = PaymentSheet.CustomerConfiguration(
-                            responseJson.getString("customer"),
-                            responseJson.getString("ephemeralKey")
-                        )
-                        customerId = responseJson.getString("customer")
-                        val publishableKey = responseJson.getString("publishableKey")
-                        PaymentConfiguration.init(applicationContext, publishableKey)
-
-                        presentPaymentSheet()
+//                        setupIntentClientSecret = responseJson.getString("setupIntent")
+//                        customerConfig = PaymentSheet.CustomerConfiguration(
+//                            responseJson.getString("customer"),
+//                            responseJson.getString("ephemeralKey")
+//                        )
+//                        customerId = responseJson.getString("customer")
+//                        val publishableKey = responseJson.getString("publishableKey")
+//                        PaymentConfiguration.init(applicationContext, publishableKey)
+//
+//                        presentPaymentSheet()
                     }
 
                     if (result is Result.Failure) {
@@ -55,51 +55,51 @@ class MainActivity: AppCompatActivity() {
         }
     }
 
-    fun presentPaymentSheet() {
-        val googlePayConfiguration = PaymentSheet.GooglePayConfiguration(
-            environment = PaymentSheet.GooglePayConfiguration.Environment.Test,
-            countryCode = "US",
-            currencyCode = "USD", // Required for Setup Intents, optional for Payment Intents
-            buttonType = PaymentSheet.GooglePayConfiguration.ButtonType.Pay
-        )
+//    fun presentPaymentSheet() {
+//        val googlePayConfiguration = PaymentSheet.GooglePayConfiguration(
+//            environment = PaymentSheet.GooglePayConfiguration.Environment.Test,
+//            countryCode = "US",
+//            currencyCode = "USD", // Required for Setup Intents, optional for Payment Intents
+//            buttonType = PaymentSheet.GooglePayConfiguration.ButtonType.Pay
+//        )
+//
+//        val configuration = PaymentSheet.Configuration(
+//                merchantDisplayName = "My merchant name",
+//                customer = customerConfig,
+//                // Set `allowsDelayedPaymentMethods` to true if your business handles
+//                // delayed notification payment methods like US bank accounts.
+//                allowsDelayedPaymentMethods = true,
+//                googlePay = googlePayConfiguration
+//            )
+//
+//        paymentSheet.presentWithSetupIntent(
+//            setupIntentClientSecret,
+//            configuration
+//        )
+//    }
 
-        val configuration = PaymentSheet.Configuration(
-                merchantDisplayName = "My merchant name",
-                customer = customerConfig,
-                // Set `allowsDelayedPaymentMethods` to true if your business handles
-                // delayed notification payment methods like US bank accounts.
-                allowsDelayedPaymentMethods = true,
-                googlePay = googlePayConfiguration
-            )
-
-        paymentSheet.presentWithSetupIntent(
-            setupIntentClientSecret,
-            configuration
-        )
-    }
-
-    fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
-        when(paymentSheetResult) {
-            is PaymentSheetResult.Canceled -> {
-                Log.i("[FRANZ] CANCELED", "CANCELED")
-            }
-            is PaymentSheetResult.Failed -> {
-                Log.i("[FRANZ] FAILED", "${paymentSheetResult.error}")
-            }
-            is PaymentSheetResult.Completed -> {
-                // Display for example, an order confirmation screen
-                Log.i("[FRANZ] COMPLETED", "$Result")
-
-                "http://10.0.2.2:8000/api/payment/customer/${customerId}".httpPost().responseJson { _, _, result ->
-                    if (result is Result.Success) {
-                        Log.i("[FRANZ] RESPONSE", "${Result}")
-                    }
-
-                    if (result is Result.Failure) {
-                        Log.i("[FRANZ] FAIL", "${result.error}")
-                    }
-                }
-            }
-        }
-    }
+//    fun onPaymentSheetResult(paymentSheetResult: PaymentSheetResult) {
+//        when(paymentSheetResult) {
+//            is PaymentSheetResult.Canceled -> {
+//                Log.i("[FRANZ] CANCELED", "CANCELED")
+//            }
+//            is PaymentSheetResult.Failed -> {
+//                Log.i("[FRANZ] FAILED", "${paymentSheetResult.error}")
+//            }
+//            is PaymentSheetResult.Completed -> {
+//                // Display for example, an order confirmation screen
+//                Log.i("[FRANZ] COMPLETED", "$Result")
+//
+//                "http://10.0.2.2:8000/api/payment/customer/${customerId}".httpPost().responseJson { _, _, result ->
+//                    if (result is Result.Success) {
+//                        Log.i("[FRANZ] RESPONSE", "${Result}")
+//                    }
+//
+//                    if (result is Result.Failure) {
+//                        Log.i("[FRANZ] FAIL", "${result.error}")
+//                    }
+//                }
+//            }
+//        }
+//    }
 }
